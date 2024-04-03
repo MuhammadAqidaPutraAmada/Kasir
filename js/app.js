@@ -50,12 +50,12 @@ document.addEventListener("DOMContentLoaded", function () {
   function addProduct(event) {
     event.preventDefault();
     const name = inputName.value.trim();
-    const price = parseFloat(inputPrice.value);
+    const price = parseFloat(inputPrice.value); // Change to number using parseFloat
     const category = inputCategory.value.trim();
     const description = inputDescription.value.trim();
-    const count = parseInt(inputCount.value);
+    const count = parseInt(inputCount.value); // Change to number using parseInt
 
-    if (!name || !price || !category || !description || !count) {
+    if (!name || isNaN(price) || !category || !description || isNaN(count)) {
       alert("Semua data harus diisi!");
       return;
     }
