@@ -44,9 +44,8 @@ document.addEventListener("DOMContentLoaded", function () {
                   </tr>`;
       tableBody.innerHTML += row;
     });
-    document.getElementById('total').textContent = total; // Perubahan di sini
+    totalElement.textContent = total;
   }
-  
 
   function addProduct(event) {
     event.preventDefault();
@@ -82,10 +81,8 @@ document.addEventListener("DOMContentLoaded", function () {
     drawProducts();
   }
 
-  function updateProduct(index) {
-    const updatedName = prompt("Masukkan nama produk baru:");
-    if (updatedName === null || updatedName.trim() === "") return;
-    productsList[index].name = updatedName.trim();
+  function deleteAllProducts() {
+    productsList = [];
     updateLocalStorage();
     drawProducts();
   }
@@ -104,44 +101,23 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  function handleButtonClick(event) {
-    if (event.target.classList.contains("delete")) {
-      const index = parseInt(event.target.dataset.index);
-      deleteProduct(index);
-    } else if (event.target.classList.contains("update")) {
-      const index = parseInt(event.target.dataset.index);
-      updateProduct(index);
-    } else if (event.target.classList.contains("increment")) {
-      const index = parseInt(event.target.dataset.index);
-      incrementCount(index);
-    } else if (event.target.classList.contains("decrement")) {
-      const index = parseInt(event.target.dataset.index);
-      decrementCount(index);
-    }
-  }
-
-  form.addEventListener("submit", addProduct);
-  tableBody.addEventListener("click", handleButtonClick);
-
-  function filterProducts(searchQuery) {
-    const filteredProducts = productsList.filter(product => {
-      const lowerCaseQuery = searchQuery.toLowerCase();
-      return (
-        product.name.toLowerCase().includes(lowerCaseQuery) ||
-        product.category.toLowerCase().includes(lowerCaseQuery) ||
-        product.description.toLowerCase().includes(lowerCaseQuery)
-      );
-    });
-    drawProducts(filteredProducts);
-  }
-
-  inputSearch.addEventListener("input", function(event) {
-    const searchQuery = event.target.value.trim();
-    filterProducts(searchQuery);
-  });
-
   function init() {
     drawProducts();
+    form.addEventListener("submit", addProduct);
+    deleteAllButton.addEventListener("click", deleteAllProducts);
+    tableBody.addEventListener("click", function (event) {
+      const target = event.target;
+      if (target.classList.contains("delete")) {
+        const index = parseInt(target.dataset.index);
+        deleteProduct(index);
+      } else if (target.classList.contains("increment")) {
+        const index = parseInt(target.dataset.index);
+        incrementCount(index);
+      } else if (target.classList.contains("decrement")) {
+        const index = parseInt(target.dataset.index);
+        decrementCount(index);
+      }
+    });
   }
 
   init();
