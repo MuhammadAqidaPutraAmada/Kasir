@@ -15,7 +15,7 @@ const tableBodyElement = document.getElementById("tBody");
 const totalElement = document.getElementById("total");
 
 // *************************************************************
-// make variable to hold the status of the addButton (stauts may be "add" or "update")
+// make variable to hold the status of the addButton (status may be "add" or "update")
 let buttonStatus = "add";
 
 // *************************************************************
@@ -72,6 +72,20 @@ function defineProduct() {
 // *************************************************************
 // check the the status of the addButton to define the operation
 addButton.addEventListener("click", function () {
+  // Periksa apakah input data tidak kosong sebelum menambahkan produk
+  if (
+    inputName.value.trim() === "" ||
+    inputPrice.value.trim() === "" ||
+    inputCategory.value.trim() === "" ||
+    inputDescription.value.trim() === "" ||
+    inputCount.value.trim() === ""
+  ) {
+    // Jika salah satu input kosong, tampilkan alert
+    alert("Semua data harus diisi!");
+    return; // Berhenti eksekusi karena data belum lengkap
+  }
+
+  // Jika semua input telah diisi, tambahkan produk
   if (buttonStatus === "add") {
     defineProduct();
   } else if (buttonStatus === "update") {
@@ -227,50 +241,4 @@ function decrementCount(productId) {
 
   if (product.count > 0) {
     product.count -= 1;
-  }
-  product.total = product.price * product.count;
-  // set productsList to localStorage
-  localStorage.setItem("products", JSON.stringify(productsList));
-  // call the drawProducts Function
-  drawProducts(productsList);
-}
-
-// *************************************************************
-// get the total price of all items
-
-function getProductsTotal() {
-  const total = productsList.reduce(function (previousElement, currentElement) {
-    return previousElement + currentElement.total;
-  }, 0);
-
-  totalElement.innerText = `${total} $`;
-}
-
-getProductsTotal();
-
-// *************************************************************
-
-deleteAllElement.addEventListener("click", function () {
-  productsList = [];
-  localStorage.setItem("products", JSON.stringify(productsList));
-  // call the drawProducts Function
-  drawProducts(productsList);
-});
-
-// here he looks to the refernce of the deleteAll function
-// deleteAllElement.addEventListener('click',deleteAll)
-
-// function deleteAll() {
-//   productsList = [];
-//   localStorage.setItem("products", JSON.stringify(productsList));
-//   // call the drawProducts Function
-//   drawProducts(productsList);
-// }
-
-// https://www.udemy.com/course/the-complete-javascript-course/
-// https://www.youtube.com/@NetNinja/playlists
-// https://www.youtube.com/@UniqueCoderzAcademy/playlists
-// https://www.youtube.com/watch?v=_rDqhxrkANc&list=PLtFbQRDJ11kFJFzd5UNy5vSnkbR031vG9
-
-// https://chrome.google.com/webstore/detail/transover/aggiiclaiamajehmlfpkjmlbadmkledi
-// https://chrome.google.com/webstore/detail/ejoy-english-learn-with-m/amfojhdiedpdnlijjbhjnhokbnohfdfb
+ 
