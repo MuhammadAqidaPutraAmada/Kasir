@@ -1,244 +1,147 @@
-// Select Elements
-const formElement = document.querySelector("form");
-const inputName = document.getElementById("productName");
-const inputPrice = document.getElementById("productPrice");
-const inputCategory = document.getElementById("productCategory");
-const inputDescription = document.getElementById("productDesc");
-const inputCount = document.getElementById("productCount");
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("productForm");
+  const inputName = document.getElementById("productName");
+  const inputPrice = document.getElementById("productPrice");
+  const inputCategory = document.getElementById("productCategory");
+  const inputDescription = document.getElementById("productDesc");
+  const inputCount = document.getElementById("productCount");
+  const inputSearch = document.getElementById("productSearch");
+  const addButton = document.getElementById("addButton");
+  const deleteAllButton = document.getElementById("deleteAll");
+  const tableBody = document.getElementById("productTableBody");
+  const totalElement = document.getElementById("total");
 
-const inputSearch = document.getElementById("productSearch");
+  let productsList = JSON.parse(localStorage.getItem("products")) || [];
 
-const addButton = document.getElementById("addButton");
-const deleteAllElement = document.getElementById("deleteAll");
-
-const tableBodyElement = document.getElementById("tBody");
-const totalElement = document.getElementById("total");
-
-// *************************************************************
-// make variable to hold the status of the addButton (status may be "add" or "update")
-let buttonStatus = "add";
-
-// *************************************************************
-// variable to contain the targetProduct in update operation
-let targetProduct;
-
-// *************************************************************
-// create productsList array
-let productsList;
-
-if (localStorage.getItem("products") !== null) {
-  // set products item from localStorage to productsList array
-  productsList = JSON.parse(localStorage.getItem("products"));
-  // call the drawProducts Function
-  drawProducts(productsList);
-} else {
-  productsList = [];
-}
-
-// *************************************************************
-// create product object and return this object
-function createProduct(name, price, category, description, count) {
-  return {
-    id: Date.now(),
-    name,
-    // name : name,
-    price,
-    // price : price,
-    category,
-    description,
-    count,
-    // count : count,
-    total: count * price,
-  };
-}
-
-// *************************************************************
-function defineProduct() {
-  let product = createProduct(
-    inputName.value,
-    +inputPrice.value,
-    inputCategory.value,
-    inputDescription.value,
-    +inputCount.value
-  );
-
-  productsList.push(product);
-  // set productsList to localStorage
-  localStorage.setItem("products", JSON.stringify(productsList));
-  // call the drawProducts Function
-  drawProducts(productsList);
-}
-
-// *************************************************************
-// check the the status of the addButton to define the operation
-addButton.addEventListener("click", function () {
-  // Periksa apakah input data tidak kosong sebelum menambahkan produk
-  if (
-    inputName.value.trim() === "" ||
-    inputPrice.value.trim() === "" ||
-    inputCategory.value.trim() === "" ||
-    inputDescription.value.trim() === "" ||
-    inputCount.value.trim() === ""
-  ) {
-    // Jika salah satu input kosong, tampilkan alert
-    alert("Semua data harus diisi!");
-    return; // Berhenti eksekusi karena data belum lengkap
+  function updateLocalStorage() {
+    localStorage.setItem("products", JSON.stringify(productsList));
   }
 
-  // Jika semua input telah diisi, tambahkan produk
-  if (buttonStatus === "add") {
-    defineProduct();
-  } else if (buttonStatus === "update") {
-    updateProduct();
+  function drawProducts() {
+    tableBody.innerHTML = "";
+    let total = 0;
+    productsList.forEach((product, index) => {
+      total += product.price * product.count;
+      const row = `<tr>
+                    <td>${index + 1}</td>
+                    <td>${product.id}</td>
+                    <td>${product.name}</td>
+                    <td>${product.price}</td>
+                    <td>${product.price * product.count}</td>
+                    <td>${product.category}</td>
+                    <td>${product.description}</td>
+                    <td class="d-flex justify-content-between align-items-center gap-3">
+                      <button class="btn btn-dark increment" data-index="${index}">+</button>
+                      ${product.count}
+                      <button class="btn btn-info decrement" data-index="${index}">-</button>
+                    </td>
+                    <td>
+                      <button class="btn btn-danger delete" data-index="${index}">Delete</button>
+                    </td>
+                    <td>
+                      <button class="btn btn-warning update" data-index="${index}">Update</button>
+                    </td>
+                  </tr>`;
+      tableBody.innerHTML += row;
+    });
+    totalElement.textContent = total;
   }
 
-  formElement.reset();
+  function addProduct(event) {
+    event.preventDefault();
+    const name = inputName.value.trim();
+    const price = parseFloat(inputPrice.value);
+    const category = inputCategory.value.trim();
+    const description = inputDescription.value.trim();
+    const count = parseInt(inputCount.value);
+
+    if (!name || !price || !category || !description || !count) {
+      alert("Semua data harus diisi!");
+      return;
+    }
+
+    const product = {
+      id: Date.now(),
+      name,
+      price,
+      category,
+      description,
+      count
+    };
+
+    productsList.push(product);
+    updateLocalStorage();
+    drawProducts();
+    form.reset();
+  }
+
+  function deleteProduct(index) {
+    productsList.splice(index, 1);
+    updateLocalStorage();
+    drawProducts();
+  }
+
+  function updateProduct(index) {
+    const updatedName = prompt("Masukkan nama produk baru:");
+    if (updatedName === null || updatedName.trim() === "") return;
+    productsList[index].name = updatedName.trim();
+    updateLocalStorage();
+    drawProducts();
+  }
+
+  function incrementCount(index) {
+    productsList[index].count++;
+    updateLocalStorage();
+    drawProducts();
+  }
+
+  function decrementCount(index) {
+    if (productsList[index].count > 0) {
+      productsList[index].count--;
+      updateLocalStorage();
+      drawProducts();
+    }
+  }
+
+  function handleButtonClick(event) {
+    if (event.target.classList.contains("delete")) {
+      const index = parseInt(event.target.dataset.index);
+      deleteProduct(index);
+    } else if (event.target.classList.contains("update")) {
+      const index = parseInt(event.target.dataset.index);
+      updateProduct(index);
+    } else if (event.target.classList.contains("increment")) {
+      const index = parseInt(event.target.dataset.index);
+      incrementCount(index);
+    } else if (event.target.classList.contains("decrement")) {
+      const index = parseInt(event.target.dataset.index);
+      decrementCount(index);
+    }
+  }
+
+  form.addEventListener("submit", addProduct);
+  tableBody.addEventListener("click", handleButtonClick);
+
+  function filterProducts(searchQuery) {
+    const filteredProducts = productsList.filter(product => {
+      const lowerCaseQuery = searchQuery.toLowerCase();
+      return (
+        product.name.toLowerCase().includes(lowerCaseQuery) ||
+        product.category.toLowerCase().includes(lowerCaseQuery) ||
+        product.description.toLowerCase().includes(lowerCaseQuery)
+      );
+    });
+    drawProducts(filteredProducts);
+  }
+
+  inputSearch.addEventListener("input", function(event) {
+    const searchQuery = event.target.value.trim();
+    filterProducts(searchQuery);
+  });
+
+  function init() {
+    drawProducts();
+  }
+
+  init();
 });
-
-// *************************************************************
-// draw productsList in UI
-function drawProducts(products) {
-  let content = "";
-  for (let index = 0; index < products.length; index++) {
-    content += `
-              <tr>
-                <td>${index + 1}</td>
-                <td>${products[index].id}</td>
-                <td>${products[index].name}</td>
-                <td>${products[index].price}</td>
-                <td>${products[index].total}</td>
-                <td>${products[index].category}</td>
-                <td>${products[index].description}</td>
-                <td class='d-flex justify-content-between align-items-center gap-3'>
-                  <button class='btn btn-dark' onclick='incrementCount(${
-                    products[index].id
-                  })'>+</button>
-                    ${products[index].count}
-                  <button class='btn btn-info' onclick='decrementCount(${
-                    products[index].id
-                  })'>-</button>
-                </td>
-                <td>
-                  <button onclick='deleteProduct(${
-                    products[index].id
-                  })' class="btn btn-danger"> Delete </button>
-                </td>
-                <td>
-                  <button onclick='getTargetProduct(${
-                    products[index].id
-                  })' class="btn btn-warning"> Update </button>
-                </td>
-              </tr>
-    `;
-  }
-
-  getProductsTotal();
-
-  tableBodyElement.innerHTML = content;
-}
-
-// *************************************************************
-
-// create deleteProduct function
-function deleteProduct(productId) {
-  productsList = productsList.filter(function (element) {
-    return element.id !== productId;
-  });
-  // draw products after filteration
-  drawProducts(productsList);
-  // set productsList to localStorage
-  localStorage.setItem("products", JSON.stringify(productsList));
-}
-
-// *************************************************************
-
-// create getTargetProduct function
-function getTargetProduct(productId) {
-  targetProduct = productsList.find(function (element) {
-    return element.id === productId;
-  });
-
-  // set the targetProduct values to the inputs to update them
-  inputName.value = targetProduct.name;
-  inputPrice.value = targetProduct.price;
-  inputCategory.value = targetProduct.category;
-  inputDescription.value = targetProduct.description;
-  inputCount.value = targetProduct.count;
-
-  buttonStatus = "update";
-  addButton.innerText = "Update Product";
-}
-
-// *************************************************************
-// create updateProduct function
-function updateProduct() {
-  const targetProductIndex = productsList.findIndex(function (element) {
-    return element.id === targetProduct.id;
-  });
-
-  productsList[targetProductIndex] = {
-    id: targetProduct.id,
-    name: inputName.value,
-    category: inputCategory.value,
-    description: inputDescription.value,
-    price: +inputPrice.value,
-    count: +inputCount.value,
-    total: +inputPrice.value * +inputCount.value,
-  };
-
-  // set productsList to localStorage
-  localStorage.setItem("products", JSON.stringify(productsList));
-  // call the drawProducts Function
-  drawProducts(productsList);
-
-  buttonStatus = "add";
-  addButton.innerText = "Add Product";
-}
-
-// *************************************************************
-
-inputSearch.addEventListener("input", function (event) {
-  // set the value of inputSearch input to variable and change it to toLowerCase
-  let searchInputValue = event.target.value.toLowerCase();
-  // call searchInProducts function and passing searchInputValue element
-  searchInProducts(searchInputValue);
-});
-
-// *************************************************************
-
-// create search Function
-function searchInProducts(searchQuery) {
-  let newProductsList = productsList.filter(function (element) {
-    return (
-      element.name.toLowerCase().includes(searchQuery) ||
-      element.category.toLowerCase().includes(searchQuery) ||
-      element.description.toLowerCase().includes(searchQuery)
-    );
-  });
-
-  // draw newProductsList after search
-  drawProducts(newProductsList);
-}
-// *************************************************************
-function incrementCount(productId) {
-  const product = productsList.find(function (element) {
-    return element.id === productId;
-  });
-  product.count += 1;
-  product.total = product.price * product.count;
-  // set productsList to localStorage
-  localStorage.setItem("products", JSON.stringify(productsList));
-  // call the drawProducts Function
-  drawProducts(productsList);
-}
-
-// *************************************************************
-
-function decrementCount(productId) {
-  const product = productsList.find(function (element) {
-    return element.id === productId;
-  });
-
-  if (product.count > 0) {
-    product.count -= 1;
- 

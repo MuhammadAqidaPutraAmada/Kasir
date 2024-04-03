@@ -1,78 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Session JS</title>
-    <!-- Bootstrap Version 4.3.1 -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
-  </head>
-  <body>
-    <!-- code start -->
-    <section class="input__field my-2">
-      <div class="container">
-        <h1 class="system__title">Kasir</h1>
-        <form>
-          <div class="field my-2">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kasir</title>
+  <!-- Bootstrap Version 4.3.1 -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+  <section class="input__field my-2">
+    <div class="container">
+      <h1 class="system__title">Kasir</h1>
+      <form id="productForm">
+        <div class="field my-2">
           <label for="productName">Nama Produk</label>
-          <input
-            id="productName"
-            class="form-control mt-1"
-            type="text"
-            placeholder="Enter Prodcut Name"
-          />
+          <input id="productName" class="form-control mt-1" type="text" placeholder="Enter Product Name" required>
         </div>
         <div class="field my-2">
           <label for="productPrice">Harga Produk</label>
-          <input
-            id="productPrice"
-            class="form-control mt-1"
-            type="number"
-            placeholder="Enter Prodcut Price"
-          />
+          <input id="productPrice" class="form-control mt-1" type="number" placeholder="Enter Product Price" required>
         </div>
         <div class="field my-2">
           <label for="productCategory">Kategori Produk</label>
-          <input
-            id="productCategory"
-            class="form-control mt-1"
-            type="text"
-            placeholder="Enter Prodcut Category"
-          />
+          <input id="productCategory" class="form-control mt-1" type="text" placeholder="Enter Product Category" required>
         </div>
         <div class="field my-2">
           <label for="productDesc">Deskripsi Produk</label>
-          <input
-            id="productDesc"
-            class="form-control mt-1"
-            type="text"
-            placeholder="Enter Prodcut Description"
-          />
+          <input id="productDesc" class="form-control mt-1" type="text" placeholder="Enter Product Description" required>
         </div>
         <div class="field my-2">
-          <label for="productCount">product Count</label>
-          <input
-            id="productCount"
-            class="form-control mt-1"
-            type="number"
-            placeholder="Enter Prodcut Counter"
-          />
+          <label for="productCount">Jumlah Produk</label>
+          <input id="productCount" class="form-control mt-1" type="number" placeholder="Enter Product Count" required>
         </div>
         <div class="field my-2 text-center my-4">
           <label for="productSearch" class="mb-2">Product Search</label>
-          <input
-            type="text"
-            id="productSearch"
-            class="form-control mt-1 w-50 m-auto"
-            placeholder="Search"
-          />
+          <input type="text" id="productSearch" class="form-control mt-1 w-50 m-auto" placeholder="Search">
         </div>
-        </form>
         <div class="my-3">
-          <button class="btn btn-primary" id="addButton">Add Proudct</button>
-          <button class="btn btn-danger" id="deleteAll">Delete All Orders</button>
+          <button type="submit" class="btn btn-primary" id="addButton">Add Product</button>
+          <button type="button" class="btn btn-danger" id="deleteAll">Delete All Orders</button>
         </div>
         <div class="output__field my-2 py-5">
           <table class="table table-bordered text-center">
@@ -82,14 +49,14 @@
               <th>Nama</th>
               <th>Harga Satuan</th>
               <th>Harga Final</th>
-              <th>Category</th>
-              <th>Description</th>
-              <th>count</th>
+              <th>Kategori</th>
+              <th>Deskripsi</th>
+              <th>Jumlah</th>
               <th>Delete Product</th>
               <th>Update Product</th>
             </thead>
-            <tbody id="tBody"></tbody>
-            <tfoot id="tFoot" class="text-center">
+            <tbody id="productTableBody"></tbody>
+            <tfoot id="productTableFooter" class="text-center">
               <tr>
                 <td>Total</td>
                 <td id="total" colspan="9" class="fs-3 fw-bold"></td>
@@ -97,10 +64,10 @@
             </tfoot>
           </table>
         </div>
-      </div>
-    </section>
-    <!-- code end -->
-    <!-- Javascript File -->
-    <script src="./js/app.js"></script>
-  </body>
+      </form>
+    </div>
+  </section>
+  <!-- Javascript File -->
+  <script src="app.js"></script>
+</body>
 </html>
