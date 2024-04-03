@@ -44,8 +44,9 @@ document.addEventListener("DOMContentLoaded", function () {
                   </tr>`;
       tableBody.innerHTML += row;
     });
-    totalElement.textContent = total;
+    document.getElementById('total').textContent = total; // Perubahan di sini
   }
+  
 
   function addProduct(event) {
     event.preventDefault();
